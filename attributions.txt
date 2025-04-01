@@ -1,0 +1,5 @@
+Kenney, kenney.nl graphics
+https://www.fontspace.com/motley-forces-font-f87817, font
+freesound,escobarrb26, freesound.org, card shuffle sound
+freesound,Christopherderp, freesound.org, button click
+libgdx

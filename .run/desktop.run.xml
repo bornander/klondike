@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="desktop" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="com.bornander.klondike.lwjgl3.Lwjgl3Launcher" />
+    <module name="klondike.lwjgl3.main" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/assets" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
