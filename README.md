@@ -1,6 +1,7 @@
 # Klondike
 
 Cross-platform implementation of the solitaire game Klondike.
+Available on [Google Play](https://play.google.com/store/apps/details?id=com.bornander.klondike&hl=en)
 
 ![gameplay](klondike.gif)
 
