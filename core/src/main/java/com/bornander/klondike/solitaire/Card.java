@@ -52,6 +52,14 @@ public class Card {
         return distance == other.rank.getValue() - rank.getValue();
     }
 
+    public boolean isOfOtherColorAndDistance(Card other, int distance) {
+        if (suit.getColor() == other.suit.getColor())
+            return false;
+
+        return distance == other.rank.getValue() - rank.getValue();
+    }
+
+
     public static boolean isAllOfSuit(Array<Card> cards, Suit suit) {
         for(var card : cards) {
             if (card.suit != suit)

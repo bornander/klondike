@@ -196,7 +196,7 @@ public class KlondikeRules implements GameRules {
     public CardStack setupDiscard(TableTop tableTop) {
         var discardPile = tableTop.createStack("discard_pile",StackIndicator.NONE, 1, 3, 0, 0);
         discardPile.canDragHandler = (stack, card) -> true;
-        discardPile.doubleTapHandler = (stack, tableTopA, dropAnimator) -> doubleTapToAutoPlaceOnFoundations(stack, tableTopA, dropAnimator);
+        discardPile.doubleTapHandler = (stack, tableTopA, dropAnimator) -> doubleTapToAutoPlace(stack, tableTopA, dropAnimator);
         return discardPile;
     }
 
@@ -251,7 +251,7 @@ public class KlondikeRules implements GameRules {
 
     private void setupTableau(TableTop tableTop, Deck deck) {
         for(var i = 0; i < 7; ++i) {
-            var tableauPile = tableTop.createStack(String.format("tableau_%d_pile", i), StackIndicator.NONE, i, 2, 0, -0.15f,  new Vector2(Float.MAX_VALUE, 1.1f));
+            var tableauPile = tableTop.createStack(String.format("tableau_pile_%d", i), StackIndicator.NONE, i, 2, 0, -0.15f,  new Vector2(Float.MAX_VALUE, 1.1f));
             tableauPile.canDragHandler = (stack, card) -> card.isFaceUp;
             tableauPile.dropHandler = (tableTopA, dropAnimator, source, target, cards) -> {
                 var valid = false;
@@ -275,7 +275,7 @@ public class KlondikeRules implements GameRules {
                     gameStats.move();
                 return valid;
             };
-            tableauPile.doubleTapHandler = (doubleTapSourceStack, tableTopA, dropAnimator) -> doubleTapToAutoPlaceOnFoundations(doubleTapSourceStack, tableTopA, dropAnimator);
+            tableauPile.doubleTapHandler = (doubleTapSourceStack, tableTopA, dropAnimator) -> doubleTapToAutoPlace(doubleTapSourceStack, tableTopA, dropAnimator);
             var cards = deck.draw(i + 1);
             for (var j = 0; j < cards.size; ++j) {
                 tableauPile.add(cards.get(j), j == cards.size - 1);
@@ -283,12 +283,13 @@ public class KlondikeRules implements GameRules {
         }
     }
 
-    private boolean doubleTapToAutoPlaceOnFoundations(CardStack doubleTapSourceStack, TableTop tableTop, DropAnimator dropAnimator) {
+    private boolean doubleTapToAutoPlace(CardStack doubleTapSourceStack, TableTop tableTop, DropAnimator dropAnimator) {
         if (!doubleTapSourceStack.any())
             return false;
 
-        var foundationStacks = tableTop.getStacks("foundation_pile_");
         var card = doubleTapSourceStack.top();
+
+        var foundationStacks = tableTop.getStacks("foundation_pile_");
         var targetFoundationStack = findTargetFoundation(card, foundationStacks);
 
         if (targetFoundationStack != null) {
@@ -301,6 +302,20 @@ public class KlondikeRules implements GameRules {
             gameStats.move();
             return true;
         }
+
+        var tableauStacks = tableTop.getStacks("tableau_pile_");
+        var targetTableauStack = findTargetTableau(card, tableauStacks);
+        if (targetTableauStack != null) {
+            doubleTapSourceStack.pop();
+            dropAnimator.dropOntoStack(tableTop, doubleTapSourceStack, targetTableauStack, new Array<>(new Card[]{card}));
+            dropAnimator.postDropHandler = (sourceStack, targetStack, droppedCards) -> {
+                if (sourceStack.any())
+                    sourceStack.top().isFaceUp = true;
+            };
+            gameStats.move();
+            return true;
+        }
+
         return false;
     }
 
@@ -353,6 +368,18 @@ public class KlondikeRules implements GameRules {
                     if (foundationCard.isOfSameSuitAndDistance(card, 1)) {
                         return foundationStack;
                     }
+                }
+            }
+        }
+        return null;
+    }
+
+    private CardStack findTargetTableau(Card card, Array<CardStack> tableaus) {
+        for(var tableauStack : tableaus) {
+            if (tableauStack.any()) {
+                var tableauCard = tableauStack.top();
+                if (tableauCard.isOfOtherColorAndDistance(card, -1)) {
+                    return tableauStack;
                 }
             }
         }
