@@ -1,13 +1,9 @@
 # Klondike
 
 Cross-platform implementation of the solitaire game Klondike.
+Available on [Google Play](https://play.google.com/store/apps/details?id=com.bornander.klondike&hl=en)
 
 ![gameplay](klondike.gif)
-
-
-A [libGDX](https://libgdx.com/) project generated with [gdx-liftoff](https://github.com/libgdx/gdx-liftoff).
-
-This project was generated with a template including simple application launchers and an `ApplicationAdapter` extension that draws libGDX logo.
 
 ## Platforms
 
